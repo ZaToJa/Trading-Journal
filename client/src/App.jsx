@@ -1,8 +1,20 @@
-
 import { useEffect, useState } from "react";
 
-function App() {
+function calcPnl(trade) {
+  // Otwarta pozycja nie ma jeszcze wyniku
+  if (trade.exitPrice === undefined || trade.exitPrice === null) {
+    return null;
+  }
 
+  const diff =
+    trade.side === "long"
+      ? trade.exitPrice - trade.entryPrice
+      : trade.entryPrice - trade.exitPrice;
+
+  return diff * trade.quantity;
+}
+
+function App() {
   const [trades, setTrades] = useState([]);
   const [symbol, setSymbol] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -13,10 +25,17 @@ function App() {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-  fetch("/api/trades")
-    .then((res) => res.json())
-    .then((data) => setTrades(data));
+    fetch("/api/trades")
+      .then((res) => res.json())
+      .then((data) => setTrades(data));
   }, []);
+
+  const closedPnls = trades.map(calcPnl).filter((pnl) => pnl !== null);
+
+  const totalPnl = closedPnls.reduce((sum, pnl) => sum + pnl, 0);
+  const wins = closedPnls.filter((pnl) => pnl > 0).length;
+  const losses = closedPnls.filter((pnl) => pnl < 0).length;
+  const winRate = closedPnls.length > 0 ? (wins / closedPnls.length) * 100 : 0;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -85,6 +104,10 @@ function App() {
   return (
     <div>
       <h1>Trading Journal</h1>
+      <p>Łączny P&amp;L: {totalPnl.toFixed(2)}</p>
+      <p>
+        Wygrane: {wins} | Przegrane: {losses} | Win rate: {winRate.toFixed(1)}%
+      </p>
 
       <form onSubmit={handleSubmit}>
         <input
@@ -123,13 +146,19 @@ function App() {
       </form>
 
       <ul>
-        {trades.map((t) => (
-          <li key={t.id}>
-            {t.symbol} ({t.side}): {t.quantity} × {t.entryPrice} → {t.exitPrice ?? "otwarta"}{" "}
-            <button onClick={() => handleEdit(t)}>Edytuj</button>{" "}
-            <button onClick={() => handleDelete(t.id)}>Usuń</button>
-          </li>
-        ))}
+        {trades.map((t) => {
+          const pnl = calcPnl(t);
+
+          return (
+            <li key={t.id}>
+              {t.symbol} ({t.side}): {t.quantity} × {t.entryPrice} →{" "}
+              {t.exitPrice ?? "otwarta"}{" "}
+              {pnl !== null && <strong>P&amp;L: {pnl.toFixed(2)}</strong>}{" "}
+              <button onClick={() => handleEdit(t)}>Edytuj</button>{" "}
+              <button onClick={() => handleDelete(t.id)}>Usuń</button>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
