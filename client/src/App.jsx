@@ -6,8 +6,8 @@ function App() {
   const [trades, setTrades] = useState([]);
   const [symbol, setSymbol] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [price, setPrice] = useState(""); 
-
+  const [price, setPrice] = useState("");
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
   fetch("/api/trades")
@@ -18,8 +18,12 @@ function App() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const res = await fetch("/api/trades", {
-      method: "POST",
+    const isEditing = editingId !== null;
+    const url = isEditing ? `/api/trades/${editingId}` : "/api/trades";
+    const method = isEditing ? "PUT" : "POST";
+
+    const res = await fetch(url, {
+      method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         symbol,
@@ -35,10 +39,27 @@ function App() {
       return;
     }
 
-    setTrades([...trades, data]);
+    if (isEditing) {
+      setTrades(trades.map((t) => (t.id === editingId ? data : t)));
+    } else {
+      setTrades([...trades, data]);
+    }
+
+    resetForm();
+  }
+
+  function resetForm() {
     setSymbol("");
     setQuantity("");
     setPrice("");
+    setEditingId(null);
+  }
+
+  function handleEdit(trade) {
+    setSymbol(trade.symbol);
+    setQuantity(trade.quantity);
+    setPrice(trade.price);
+    setEditingId(trade.id);
   }
 
   async function handleDelete(id) {
@@ -74,13 +95,19 @@ function App() {
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
-        <button type="submit">Dodaj</button>
+        <button type="submit">{editingId !== null ? "Zapisz" : "Dodaj"}</button>
+        {editingId !== null && (
+          <button type="button" onClick={resetForm}>
+            Anuluj
+          </button>
+        )}
       </form>
 
       <ul>
         {trades.map((t) => (
           <li key={t.id}>
             {t.symbol}: {t.quantity} × {t.price}{" "}
+            <button onClick={() => handleEdit(t)}>Edytuj</button>{" "}
             <button onClick={() => handleDelete(t.id)}>Usuń</button>
           </li>
         ))}
