@@ -1,0 +1,34 @@
+GET http://localhost:3001/api/trades
+
+###
+
+GET http://localhost:3001/api/trades/2
+
+###
+
+POST http://localhost:3001/api/trades
+Content-Type: application/json
+
+{
+  "symbol": "AMZN",
+  "quantity": 3,
+  "price": 180
+}
+
+###
+
+DELETE http://localhost:3001/api/trades/2
+
+###
+
+PUT http://localhost:3001/api/trades/2
+Content-Type: application/json
+
+{
+  "symbol": "GOOGL",
+  "quantity": 8,
+  "price": 2900
+}
+
+
+###
