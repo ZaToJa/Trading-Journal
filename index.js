@@ -6,14 +6,35 @@ const app = express();
 app.use(express.json());
 
 let trades = [
-  { id: 1, symbol: "AAPL", quantity: 10, price: 150 },
-  { id: 2, symbol: "GOOGL", quantity: 5, price: 2800 },
-  { id: 3, symbol: "TSLA", quantity: 2, price: 700 },
+  {
+    id: 1,
+    symbol: "AAPL",
+    side: "long",
+    quantity: 10,
+    entryPrice: 140,
+    exitPrice: 160,
+  },
+  {
+    id: 2,
+    symbol: "GOOGL",
+    side: "long",
+    quantity: 5,
+    entryPrice: 2900,
+    exitPrice: 2700,
+  },
+  {
+    id: 3,
+    symbol: "TSLA",
+    side: "short",
+    quantity: 2,
+    entryPrice: 750,
+    exitPrice: 650,
+  },
 ];
 
 function validateTrade(body) {
   const errors = [];
-  const { symbol, quantity, price } = body;
+  const { symbol, side, quantity, entryPrice, exitPrice } = body;
 
   if (typeof symbol !== "string" || symbol.trim() === "") {
     errors.push("symbol must be a non-empty string");
@@ -21,8 +42,19 @@ function validateTrade(body) {
   if (typeof quantity !== "number" || quantity <= 0) {
     errors.push("quantity must be a positive number");
   }
-  if (typeof price !== "number" || price <= 0) {
-    errors.push("price must be a positive number");
+  if (typeof entryPrice !== "number" || entryPrice <= 0) {
+    errors.push("entryPrice must be a positive number");
+  }
+  // exitPrice jest opcjonalne (otwarta pozycja), ale jeśli jest, musi być poprawne
+  if (
+    exitPrice !== undefined &&
+    exitPrice !== null &&
+    (typeof exitPrice !== "number" || exitPrice <= 0)
+  ) {
+    errors.push("exitPrice must be a positive number");
+  }
+  if (!["long", "short"].includes(side)) {
+    errors.push('side must be "long" or "short"');
   }
 
   return errors;
@@ -44,8 +76,15 @@ app.get("/api/trades/:id", (req, res) => {
 });
 
 app.post("/api/trades", (req, res) => {
-  const { symbol, quantity, price } = req.body;
-  const newTrade = { id: Date.now(), symbol, quantity, price };
+  const { symbol, side, quantity, entryPrice, exitPrice } = req.body;
+  const newTrade = {
+    id: Date.now(),
+    symbol,
+    side,
+    quantity,
+    entryPrice,
+    exitPrice,
+  };
   const errors = validateTrade(req.body);
 
   if (errors.length > 0) {
@@ -59,7 +98,7 @@ app.post("/api/trades", (req, res) => {
 app.put("/api/trades/:id", (req, res) => {
   const id = Number(req.params.id);
   const tradeIndex = trades.findIndex((t) => t.id === id);
-  const { symbol, quantity, price } = req.body;
+  const { symbol, side, quantity, entryPrice, exitPrice } = req.body;
   const errors = validateTrade(req.body);
 
   if (tradeIndex === -1) {
@@ -70,7 +109,7 @@ app.put("/api/trades/:id", (req, res) => {
     return res.status(400).json({ errors });
   }
 
-  trades[tradeIndex] = { id, symbol, quantity, price };
+  trades[tradeIndex] = { id, symbol, side, quantity, entryPrice, exitPrice };
   res.json(trades[tradeIndex]);
 });
 

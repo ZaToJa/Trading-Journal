@@ -50,3 +50,16 @@ Content-Type: application/json
 }
 
 ###
+
+POST http://localhost:3001/api/trades
+Content-Type: application/json
+
+{
+  "symbol": "AMZN",
+  "side": "long",
+  "quantity": 3,
+  "entryPrice": 180
+}
+
+
+###

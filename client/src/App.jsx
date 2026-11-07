@@ -6,7 +6,10 @@ function App() {
   const [trades, setTrades] = useState([]);
   const [symbol, setSymbol] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [price, setPrice] = useState("");
+  const [side, setSide] = useState("long");
+  const [entryPrice, setEntryPrice] = useState("");
+  const [exitPrice, setExitPrice] = useState("");
+
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
@@ -27,15 +30,17 @@ function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         symbol,
+        side,
         quantity: Number(quantity),
-        price: Number(price),
+        entryPrice: Number(entryPrice),
+        exitPrice: exitPrice === "" ? undefined : Number(exitPrice),
       }),
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-      console.log(data.error);
+      console.log(data.errors ?? data.error);
       return;
     }
 
@@ -50,15 +55,19 @@ function App() {
 
   function resetForm() {
     setSymbol("");
+    setSide("long");
     setQuantity("");
-    setPrice("");
+    setEntryPrice("");
+    setExitPrice("");
     setEditingId(null);
   }
 
   function handleEdit(trade) {
     setSymbol(trade.symbol);
+    setSide(trade.side);
     setQuantity(trade.quantity);
-    setPrice(trade.price);
+    setEntryPrice(trade.entryPrice);
+    setExitPrice(trade.exitPrice ?? "");
     setEditingId(trade.id);
   }
 
@@ -89,11 +98,21 @@ function App() {
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
         />
+        <select value={side} onChange={(e) => setSide(e.target.value)}>
+          <option value="long">Long</option>
+          <option value="short">Short</option>
+        </select>
         <input
-          placeholder="Cena"
+          placeholder="Cena wejścia"
           type="number"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          value={entryPrice}
+          onChange={(e) => setEntryPrice(e.target.value)}
+        />
+        <input
+          placeholder="Cena wyjścia (opcjonalnie)"
+          type="number"
+          value={exitPrice}
+          onChange={(e) => setExitPrice(e.target.value)}
         />
         <button type="submit">{editingId !== null ? "Zapisz" : "Dodaj"}</button>
         {editingId !== null && (
@@ -106,7 +125,7 @@ function App() {
       <ul>
         {trades.map((t) => (
           <li key={t.id}>
-            {t.symbol}: {t.quantity} × {t.price}{" "}
+            {t.symbol} ({t.side}): {t.quantity} × {t.entryPrice} → {t.exitPrice ?? "otwarta"}{" "}
             <button onClick={() => handleEdit(t)}>Edytuj</button>{" "}
             <button onClick={() => handleDelete(t.id)}>Usuń</button>
           </li>
