@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const ITEMS = [
   { id: "dashboard", label: "Dashboard" },
   { id: "log", label: "Trade Log" },
@@ -7,10 +5,8 @@ const ITEMS = [
   { id: "account", label: "Account" },
 ];
 
-// Na razie same przyciski (bez routingu) – aktywny element tylko się podświetla
-export default function SidebarNav() {
-  const [active, setActive] = useState("dashboard");
-
+// Aktywna strona jest trzymana w App – menu tylko ją pokazuje i zgłasza kliknięcia
+export default function SidebarNav({ active, onChange }) {
   return (
     <nav className="nav">
       {ITEMS.map((item) => (
@@ -18,7 +14,7 @@ export default function SidebarNav() {
           key={item.id}
           type="button"
           className={`nav-item ${active === item.id ? "nav-active" : ""}`}
-          onClick={() => setActive(item.id)}
+          onClick={() => onChange(item.id)}
         >
           {item.label}
         </button>

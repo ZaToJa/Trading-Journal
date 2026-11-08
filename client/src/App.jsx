@@ -5,14 +5,16 @@ import "./styles/Stats.css";
 import Calendar from "./components/Calendar";
 import SidebarNav from "./components/SidebarNav";
 import TradeForm from "./components/TradeForm";
-import StatsPanels from "./components/StatsPanels";
-import TradesTable from "./components/TradesTable";
+import Dashboard from "./pages/Dashboard";
+import Placeholder from "./pages/Placeholder";
+import TradeLog from "./pages/TradeLog";
 import { useTrades } from "./hooks/useTrades";
 import { computeStats } from "./utils/trades";
 
 function App() {
   const { trades, saveTrade, deleteTrade } = useTrades();
   const [editingTrade, setEditingTrade] = useState(null);
+  const [page, setPage] = useState("dashboard");
 
   const stats = computeStats(trades);
 
@@ -30,7 +32,7 @@ function App() {
           <span className="brand-name">Trading Journal</span>
         </div>
         <span className="nav-title">Overview</span>
-        <SidebarNav />
+        <SidebarNav active={page} onChange={setPage} />
 
         <span className="nav-title">Trade Form</span>
         <TradeForm
@@ -45,17 +47,16 @@ function App() {
       </aside>
 
       <main className="main">
-        <div className="page-head">
-          <h1>Dashboard</h1>
-          <p>Podsumowanie Twoich transakcji</p>
-        </div>
-
-        <StatsPanels stats={stats} />
-        <TradesTable
-          trades={trades}
-          onEdit={setEditingTrade}
-          onDelete={deleteTrade}
-        />
+        {page === "dashboard" && <Dashboard stats={stats} />}
+        {page === "log" && (
+          <TradeLog
+            trades={trades}
+            onEdit={setEditingTrade}
+            onDelete={deleteTrade}
+          />
+        )}
+        {page === "stats" && <Placeholder title="Statystyki" />}
+        {page === "account" && <Placeholder title="Account" />}
       </main>
     </div>
   );
