@@ -127,60 +127,96 @@ function App() {
       </div>
 
       <form className="trade-form" onSubmit={handleSubmit}>
-        <input
-          placeholder="Symbol"
-          value={symbol}
-          onChange={(e) => setSymbol(e.target.value)}
-        />
-        <input
-          placeholder="Ilość"
-          type="number"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-        />
-        <select value={side} onChange={(e) => setSide(e.target.value)}>
-          <option value="long">Long</option>
-          <option value="short">Short</option>
-        </select>
-        <input
-          placeholder="Cena wejścia"
-          type="number"
-          value={entryPrice}
-          onChange={(e) => setEntryPrice(e.target.value)}
-        />
-        <input
-          placeholder="Cena wyjścia (opcjonalnie)"
-          type="number"
-          value={exitPrice}
-          onChange={(e) => setExitPrice(e.target.value)}
-        />
-        <button type="submit">{editingId !== null ? "Zapisz" : "Dodaj"}</button>
+        <label>
+          Symbol
+          <input value={symbol} onChange={(e) => setSymbol(e.target.value)} />
+        </label>
+        <label>
+          Ilość
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+          />
+        </label>
+        <label>
+          Kierunek
+          <select value={side} onChange={(e) => setSide(e.target.value)}>
+            <option value="long">Long</option>
+            <option value="short">Short</option>
+          </select>
+        </label>
+        <label>
+          Cena wejścia
+          <input
+            type="number"
+            value={entryPrice}
+            onChange={(e) => setEntryPrice(e.target.value)}
+          />
+        </label>
+        <label>
+          Cena wyjścia
+          <input
+            type="number"
+            placeholder="opcjonalnie"
+            value={exitPrice}
+            onChange={(e) => setExitPrice(e.target.value)}
+          />
+        </label>
+        <button className="btn btn-primary" type="submit">
+          {editingId !== null ? "Zapisz" : "Dodaj"}
+        </button>
         {editingId !== null && (
-          <button type="button" onClick={resetForm}>
+          <button className="btn" type="button" onClick={resetForm}>
             Anuluj
           </button>
         )}
       </form>
 
-      <ul className="trade-list">
-        {trades.map((t) => {
-          const pnl = calcPnl(t);
+      <table className="trade-table">
+        <thead>
+          <tr>
+            <th>Instrument</th>
+            <th>Kierunek</th>
+            <th>Ilość</th>
+            <th>Wejście</th>
+            <th>Wyjście</th>
+            <th>P&amp;L</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {trades.map((t) => {
+            const pnl = calcPnl(t);
 
-          return (
-            <li key={t.id} className="trade-item">
-              {t.symbol} ({t.side}): {t.quantity} × {t.entryPrice} →{" "}
-              {t.exitPrice ?? "otwarta"}{" "}
-              {pnl !== null && (
-                <strong className={pnl >= 0 ? "pos" : "neg"}>
-                  P&amp;L: {pnl.toFixed(2)}
-                </strong>
-              )}{" "}
-              <button onClick={() => handleEdit(t)}>Edytuj</button>{" "}
-              <button onClick={() => handleDelete(t.id)}>Usuń</button>
-            </li>
-          );
-        })}
-      </ul>
+            return (
+              <tr key={t.id}>
+                <td>{t.symbol}</td>
+                <td>
+                  <span className={`badge ${t.side}`}>{t.side}</span>
+                </td>
+                <td>{t.quantity}</td>
+                <td>{t.entryPrice}</td>
+                <td>{t.exitPrice ?? "otwarta"}</td>
+                <td className={pnl === null ? "" : pnl >= 0 ? "pos" : "neg"}>
+                  {pnl === null ? "—" : pnl.toFixed(2)}
+                </td>
+                <td>
+                  <button className="btn" onClick={() => handleEdit(t)}>
+                    Edytuj
+                  </button>{" "}
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleDelete(t.id)}
+                  >
+                    Usuń
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
