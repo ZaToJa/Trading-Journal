@@ -85,6 +85,12 @@
   border-color: var(--muted);
 }
 
+.nav-item:active,
+.nav-active {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
 
 /* =========================================================
    Formularz

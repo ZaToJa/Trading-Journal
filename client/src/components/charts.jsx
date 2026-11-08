@@ -57,19 +57,26 @@ export function WinRing({ rate }) {
   );
 }
 
-export function TradeBars({ pnls }) {
-  const last = pnls.slice(-12);
-  if (last.length === 0) return <div className="empty">Brak danych</div>;
-  const max = Math.max(...last.map(Math.abs)) || 1;
+// Słupki pon–pt bieżącego tygodnia; dzień bez transakcji to szary placeholder
+export function WeekBars({ bars }) {
+  const max = Math.max(...bars.map((b) => Math.abs(b.pnl ?? 0))) || 1;
+
   return (
-    <div className="bars">
-      {last.map((p, i) => (
-        <div key={i} className="bar-col">
-          <div
-            className={`bar ${p >= 0 ? "bar-pos" : "bar-neg"}`}
-            style={{ height: `${Math.max(6, (Math.abs(p) / max) * 100)}%` }}
-            title={money(p)}
-          />
+    <div className="week">
+      {bars.map((b) => (
+        <div key={b.label} className="week-col">
+          <div className="week-slot">
+            {b.pnl === null ? (
+              <div className="bar bar-empty" style={{ height: "8%" }} />
+            ) : (
+              <div
+                className={`bar ${b.pnl >= 0 ? "bar-pos" : "bar-neg"}`}
+                style={{ height: `${Math.max(10, (Math.abs(b.pnl) / max) * 100)}%` }}
+                title={money(b.pnl)}
+              />
+            )}
+          </div>
+          <span className="week-label">{b.label}</span>
         </div>
       ))}
     </div>
