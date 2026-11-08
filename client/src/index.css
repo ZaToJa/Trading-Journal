@@ -1,0 +1,27 @@
+/* =========================================================
+   Globalne: zmienne, reset i body
+   ========================================================= */
+:root {
+  color-scheme: dark;
+  --bg: #161616;
+  --sidebar: #1b1b1b;
+  --surface: #202020;
+  --surface-2: #272727;
+  --border: #2e2e2e;
+  --text: #ececec;
+  --muted: #aaaaaa;
+  --accent: #6d5dfc;
+  --pos: #3ddc84;
+  --neg: #ef5350;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}

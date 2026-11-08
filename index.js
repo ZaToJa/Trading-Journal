@@ -13,6 +13,7 @@ let trades = [
     quantity: 10,
     entryPrice: 140,
     exitPrice: 160,
+    date: "2026-11-03",
   },
   {
     id: 2,
@@ -21,6 +22,7 @@ let trades = [
     quantity: 5,
     entryPrice: 2900,
     exitPrice: 2700,
+    date: "2026-11-04",
   },
   {
     id: 3,
@@ -29,12 +31,13 @@ let trades = [
     quantity: 2,
     entryPrice: 750,
     exitPrice: 650,
+    date: "2026-11-06",
   },
 ];
 
 function validateTrade(body) {
   const errors = [];
-  const { symbol, side, quantity, entryPrice, exitPrice } = body;
+  const { symbol, side, quantity, entryPrice, exitPrice, date } = body;
 
   if (typeof symbol !== "string" || symbol.trim() === "") {
     errors.push("symbol must be a non-empty string");
@@ -52,6 +55,9 @@ function validateTrade(body) {
     (typeof exitPrice !== "number" || exitPrice <= 0)
   ) {
     errors.push("exitPrice must be a positive number");
+  }
+  if (typeof date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    errors.push("date must be a string in YYYY-MM-DD format");
   }
   if (!["long", "short"].includes(side)) {
     errors.push('side must be "long" or "short"');
@@ -76,7 +82,7 @@ app.get("/api/trades/:id", (req, res) => {
 });
 
 app.post("/api/trades", (req, res) => {
-  const { symbol, side, quantity, entryPrice, exitPrice } = req.body;
+  const { symbol, side, quantity, entryPrice, exitPrice, date } = req.body;
   const newTrade = {
     id: Date.now(),
     symbol,
@@ -84,6 +90,7 @@ app.post("/api/trades", (req, res) => {
     quantity,
     entryPrice,
     exitPrice,
+    date,
   };
   const errors = validateTrade(req.body);
 
@@ -98,7 +105,7 @@ app.post("/api/trades", (req, res) => {
 app.put("/api/trades/:id", (req, res) => {
   const id = Number(req.params.id);
   const tradeIndex = trades.findIndex((t) => t.id === id);
-  const { symbol, side, quantity, entryPrice, exitPrice } = req.body;
+  const { symbol, side, quantity, entryPrice, exitPrice, date } = req.body;
   const errors = validateTrade(req.body);
 
   if (tradeIndex === -1) {
@@ -109,7 +116,15 @@ app.put("/api/trades/:id", (req, res) => {
     return res.status(400).json({ errors });
   }
 
-  trades[tradeIndex] = { id, symbol, side, quantity, entryPrice, exitPrice };
+  trades[tradeIndex] = {
+    id,
+    symbol,
+    side,
+    quantity,
+    entryPrice,
+    exitPrice,
+    date,
+  };
   res.json(trades[tradeIndex]);
 });
 

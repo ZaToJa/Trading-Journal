@@ -1,0 +1,277 @@
+/* =========================================================
+   Główna kolumna: kontener i wspólne reguły
+   ========================================================= */
+.main {
+  min-width: 0;
+  padding: 24px 28px 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+.span-3 {
+  grid-column: span 3;
+}
+
+.empty {
+  padding: 24px 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* =========================================================
+   Nagłówek strony
+   ========================================================= */
+.page-head h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.page-head p {
+  margin: 4px 0 22px;
+  color: var(--muted);
+}
+
+/* =========================================================
+   Panele ze statystykami
+   ========================================================= */
+.hero {
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.hero-value {
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.hero-sub,
+.muted-line {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.big {
+  margin: 10px 0 6px;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* =========================================================
+   Wykresy
+   ========================================================= */
+.equity {
+  display: block;
+  width: 100%;
+  height: 110px;
+}
+
+.zero-line {
+  stroke: var(--border);
+  stroke-dasharray: 3 3;
+}
+
+.ring-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ring {
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.ring-bg {
+  fill: none;
+  stroke: var(--surface-2);
+  stroke-width: 10;
+}
+
+.ring-fg {
+  fill: none;
+  stroke: var(--pos);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.ring-text {
+  fill: var(--text);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.ring-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 110px;
+}
+
+.bar-col {
+  display: flex;
+  align-items: flex-end;
+  flex: 1;
+  height: 100%;
+}
+
+.bar {
+  width: 100%;
+  border-radius: 3px;
+}
+
+.bar-pos {
+  background: var(--pos);
+}
+
+.bar-neg {
+  background: var(--neg);
+}
+
+.sym-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sym-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 110px;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.88rem;
+}
+
+.sym-track {
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.sym-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.sym-val {
+  text-align: right;
+  font-weight: 600;
+}
+
+/* =========================================================
+   Tabela transakcji
+   ========================================================= */
+.table-scroll {
+  overflow-x: auto;
+}
+
+.trade-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.trade-table th,
+.trade-table td {
+  padding: 11px 10px;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+
+.trade-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.trade-table tbody tr:hover {
+  background: var(--surface-2);
+}
+
+.trade-table th {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.strong {
+  font-weight: 600;
+}
+
+.btn-danger:hover {
+  color: var(--neg);
+  border-color: var(--neg);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.badge {
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.badge.long {
+  color: var(--pos);
+  background: rgba(61, 220, 132, 0.15);
+}
+
+.badge.short {
+  color: var(--neg);
+  background: rgba(239, 83, 80, 0.15);
+}
+
+/* =========================================================
+   Wąski ekran
+   ========================================================= */
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .span-3 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 820px) {
+  .main {
+    padding: 20px 16px 32px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .span-2,
+  .span-3 {
+    grid-column: auto;
+  }
+}
