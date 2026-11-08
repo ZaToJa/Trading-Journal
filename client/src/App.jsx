@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./App.css";
 
 function calcPnl(trade) {
   // Otwarta pozycja nie ma jeszcze wyniku
@@ -104,12 +105,28 @@ function App() {
   return (
     <div>
       <h1>Trading Journal</h1>
-      <p>Łączny P&amp;L: {totalPnl.toFixed(2)}</p>
-      <p>
-        Wygrane: {wins} | Przegrane: {losses} | Win rate: {winRate.toFixed(1)}%
-      </p>
+      <div className="stats">
+        <div className="stat">
+          <span className="stat-label">Łączny P&amp;L</span>
+          <span className={`stat-value ${totalPnl >= 0 ? "pos" : "neg"}`}>
+            {totalPnl.toFixed(2)}
+          </span>
+        </div>
+        <div className="stat">
+          <span className="stat-label">Wygrane</span>
+          <span className="stat-value">{wins}</span>
+        </div>
+        <div className="stat">
+          <span className="stat-label">Przegrane</span>
+          <span className="stat-value">{losses}</span>
+        </div>
+        <div className="stat">
+          <span className="stat-label">Win rate</span>
+          <span className="stat-value">{winRate.toFixed(1)}%</span>
+        </div>
+      </div>
 
-      <form onSubmit={handleSubmit}>
+      <form className="trade-form" onSubmit={handleSubmit}>
         <input
           placeholder="Symbol"
           value={symbol}
@@ -145,15 +162,19 @@ function App() {
         )}
       </form>
 
-      <ul>
+      <ul className="trade-list">
         {trades.map((t) => {
           const pnl = calcPnl(t);
 
           return (
-            <li key={t.id}>
+            <li key={t.id} className="trade-item">
               {t.symbol} ({t.side}): {t.quantity} × {t.entryPrice} →{" "}
               {t.exitPrice ?? "otwarta"}{" "}
-              {pnl !== null && <strong>P&amp;L: {pnl.toFixed(2)}</strong>}{" "}
+              {pnl !== null && (
+                <strong className={pnl >= 0 ? "pos" : "neg"}>
+                  P&amp;L: {pnl.toFixed(2)}
+                </strong>
+              )}{" "}
               <button onClick={() => handleEdit(t)}>Edytuj</button>{" "}
               <button onClick={() => handleDelete(t.id)}>Usuń</button>
             </li>
