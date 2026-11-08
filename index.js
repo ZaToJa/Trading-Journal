@@ -1,43 +1,40 @@
 const express = require("express");
+const fs = require("fs");
+const path = require("path");
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
 app.use(express.json());
 
-let trades = [
-  {
-    id: 1,
-    symbol: "AAPL",
-    side: "long",
-    quantity: 10,
-    entryPrice: 140,
-    exitPrice: 160,
-    date: "2026-11-03",
-  },
-  {
-    id: 2,
-    symbol: "GOOGL",
-    side: "long",
-    quantity: 5,
-    entryPrice: 2900,
-    exitPrice: 2700,
-    date: "2026-11-04",
-  },
-  {
-    id: 3,
-    symbol: "TSLA",
-    side: "short",
-    quantity: 2,
-    entryPrice: 750,
-    exitPrice: 650,
-    date: "2026-11-06",
-  },
-];
+const DATA_FILE = path.join(__dirname, "trades.json");
+
+function saveTrades() {
+  fs.writeFileSync(DATA_FILE, JSON.stringify(trades, null, 2));
+}
+
+function loadTrades() {
+  try {
+    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      console.error("Nie udało się wczytać trades.json:", err.message);
+      process.exit(1);
+    }
+    fs.writeFileSync(DATA_FILE, "[]", { flag: "wx" });
+    return [];
+  }
+}
+
+let trades = loadTrades();
+
+// data i godzina w formacie YYYY-MM-DDTHH:MM (jak z <input type="datetime-local">)
+const DATETIME_REGEX = /^\d{4}-\d{2}-\d{2}T([01]\d|2[0-3]):[0-5]\d$/;
 
 function validateTrade(body) {
   const errors = [];
-  const { symbol, side, quantity, entryPrice, exitPrice, date } = body;
+  const { symbol, side, quantity, entryPrice, exitPrice, entryTime, exitTime } =
+    body;
 
   if (typeof symbol !== "string" || symbol.trim() === "") {
     errors.push("symbol must be a non-empty string");
@@ -56,8 +53,16 @@ function validateTrade(body) {
   ) {
     errors.push("exitPrice must be a positive number");
   }
-  if (typeof date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    errors.push("date must be a string in YYYY-MM-DD format");
+  if (typeof entryTime !== "string" || !DATETIME_REGEX.test(entryTime)) {
+    errors.push("entryTime must be a string in YYYY-MM-DDTHH:MM format");
+  }
+  // exitTime jest opcjonalne (otwarta pozycja), ale jeśli jest, musi być poprawne
+  if (
+    exitTime !== undefined &&
+    exitTime !== null &&
+    (typeof exitTime !== "string" || !DATETIME_REGEX.test(exitTime))
+  ) {
+    errors.push("exitTime must be a string in YYYY-MM-DDTHH:MM format");
   }
   if (!["long", "short"].includes(side)) {
     errors.push('side must be "long" or "short"');
@@ -82,7 +87,8 @@ app.get("/api/trades/:id", (req, res) => {
 });
 
 app.post("/api/trades", (req, res) => {
-  const { symbol, side, quantity, entryPrice, exitPrice, date } = req.body;
+  const { symbol, side, quantity, entryPrice, exitPrice, entryTime, exitTime } =
+    req.body;
   const newTrade = {
     id: Date.now(),
     symbol,
@@ -90,7 +96,8 @@ app.post("/api/trades", (req, res) => {
     quantity,
     entryPrice,
     exitPrice,
-    date,
+    entryTime,
+    exitTime,
   };
   const errors = validateTrade(req.body);
 
@@ -99,13 +106,15 @@ app.post("/api/trades", (req, res) => {
   }
 
   trades.push(newTrade);
+  saveTrades();
   res.status(201).json(newTrade);
 });
 
 app.put("/api/trades/:id", (req, res) => {
   const id = Number(req.params.id);
   const tradeIndex = trades.findIndex((t) => t.id === id);
-  const { symbol, side, quantity, entryPrice, exitPrice, date } = req.body;
+  const { symbol, side, quantity, entryPrice, exitPrice, entryTime, exitTime } =
+    req.body;
   const errors = validateTrade(req.body);
 
   if (tradeIndex === -1) {
@@ -123,8 +132,10 @@ app.put("/api/trades/:id", (req, res) => {
     quantity,
     entryPrice,
     exitPrice,
-    date,
+    entryTime,
+    exitTime,
   };
+  saveTrades();
   res.json(trades[tradeIndex]);
 });
 
@@ -136,6 +147,7 @@ app.delete("/api/trades/:id", (req, res) => {
     return res.status(404).json({ error: "Trade not found" });
   }
   trades.splice(tradeIndex, 1);
+  saveTrades();
   res.status(204).send();
 });
 

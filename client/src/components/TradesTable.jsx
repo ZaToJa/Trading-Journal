@@ -1,5 +1,5 @@
 import Panel from "./Panel";
-import { calcPnl, money } from "../utils/trades";
+import { calcPnl, formatDateTime, money } from "../utils/trades";
 
 export default function TradesTable({ trades, onEdit, onDelete }) {
   return (
@@ -8,12 +8,13 @@ export default function TradesTable({ trades, onEdit, onDelete }) {
         <table className="trade-table">
           <thead>
             <tr>
-              <th>Data</th>
+              <th>Czas wejścia</th>
+              <th>Czas wyjścia</th>
               <th>Instrument</th>
               <th>Kierunek</th>
               <th>Ilość</th>
-              <th>Wejście</th>
-              <th>Wyjście</th>
+              <th>Cena wej.</th>
+              <th>Cena wyj.</th>
               <th>P&amp;L</th>
               <th></th>
             </tr>
@@ -23,7 +24,8 @@ export default function TradesTable({ trades, onEdit, onDelete }) {
               const pnl = calcPnl(t);
               return (
                 <tr key={t.id}>
-                  <td>{t.date}</td>
+                  <td>{formatDateTime(t.entryTime)}</td>
+                  <td>{formatDateTime(t.exitTime)}</td>
                   <td className="strong">{t.symbol}</td>
                   <td>
                     <span className={`badge ${t.side}`}>{t.side}</span>

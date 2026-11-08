@@ -29,8 +29,20 @@ export function toISO(d) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-export function todayISO() {
-  return toISO(new Date());
+// Aktualna data i godzina w formacie YYYY-MM-DDTHH:MM
+export function nowDateTime() {
+  const d = new Date();
+  return `${toISO(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+// Dzień transakcji (YYYY-MM-DD) wzięty z daty wejścia
+export function tradeDay(trade) {
+  return trade.entryTime ? trade.entryTime.slice(0, 10) : null;
+}
+
+// "2026-11-07T09:30" → "2026-11-07 09:30"
+export function formatDateTime(value) {
+  return value ? value.replace("T", " ") : "—";
 }
 
 // Wszystkie statystyki liczone w jednym miejscu
@@ -38,7 +50,7 @@ export function computeStats(trades) {
   const closed = trades
     .map((t) => ({ trade: t, pnl: calcPnl(t) }))
     .filter((x) => x.pnl !== null)
-    .sort((a, b) => (a.trade.date ?? "").localeCompare(b.trade.date ?? ""));
+    .sort((a, b) => (a.trade.entryTime ?? "").localeCompare(b.trade.entryTime ?? ""));
 
   const pnls = closed.map((x) => x.pnl);
   const totalPnl = pnls.reduce((s, p) => s + p, 0);
@@ -86,8 +98,9 @@ export function pnlByDay(trades) {
   const days = {};
   trades.forEach((t) => {
     const pnl = calcPnl(t);
-    if (pnl === null || !t.date) return;
-    days[t.date] = (days[t.date] ?? 0) + pnl;
+    const day = tradeDay(t);
+    if (pnl === null || !day) return;
+    days[day] = (days[day] ?? 0) + pnl;
   });
   return days;
 }
@@ -137,8 +150,9 @@ const WEEKDAY_NAMES = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek
 function weekdayTotals(closed) {
   const totals = WEEKDAY_NAMES.map((name) => ({ name, pnl: 0, count: 0 }));
   closed.forEach(({ trade, pnl }) => {
-    if (!trade.date) return;
-    const [y, m, d] = trade.date.split("-").map(Number);
+    const day = tradeDay(trade);
+    if (!day) return;
+    const [y, m, d] = day.split("-").map(Number);
     const idx = (new Date(y, m - 1, d).getDay() + 6) % 7;
     if (idx > 4) return;
     totals[idx].pnl += pnl;
@@ -150,7 +164,7 @@ function weekdayTotals(closed) {
 // Pięć ostatnich transakcji (najnowsze na górze)
 function recentTrades(trades) {
   return [...trades]
-    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? "") || b.id - a.id)
+    .sort((a, b) => (b.entryTime ?? "").localeCompare(a.entryTime ?? "") || b.id - a.id)
     .slice(0, 5)
     .map((t) => ({ ...t, pnl: calcPnl(t) }));
 }

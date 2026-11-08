@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { todayISO } from "../utils/trades";
+import { nowDateTime } from "../utils/trades";
 
 const EMPTY = {
   symbol: "",
@@ -7,7 +7,8 @@ const EMPTY = {
   quantity: "",
   entryPrice: "",
   exitPrice: "",
-  date: todayISO(),
+  entryTime: nowDateTime(),
+  exitTime: "",
 };
 
 export default function TradeForm({ editingTrade, onSave, onCancel }) {
@@ -15,7 +16,12 @@ export default function TradeForm({ editingTrade, onSave, onCancel }) {
   // więc stan startowy wystarczy ustawić raz.
   const [form, setForm] = useState(
     editingTrade
-      ? { ...EMPTY, ...editingTrade, exitPrice: editingTrade.exitPrice ?? "" }
+      ? {
+          ...EMPTY,
+          ...editingTrade,
+          exitPrice: editingTrade.exitPrice ?? "",
+          exitTime: editingTrade.exitTime ?? "",
+        }
       : EMPTY,
   );
 
@@ -30,10 +36,11 @@ export default function TradeForm({ editingTrade, onSave, onCancel }) {
       quantity: Number(form.quantity),
       entryPrice: Number(form.entryPrice),
       exitPrice: form.exitPrice === "" ? undefined : Number(form.exitPrice),
-      date: form.date,
+      entryTime: form.entryTime,
+      exitTime: form.exitTime === "" ? undefined : form.exitTime,
     });
 
-    if (ok) setForm({ ...EMPTY, date: todayISO() });
+    if (ok) setForm({ ...EMPTY, entryTime: nowDateTime() });
   }
 
   return (
@@ -64,16 +71,10 @@ export default function TradeForm({ editingTrade, onSave, onCancel }) {
         ))}
       </div>
 
-      <div className="row">
-        <label>
-          Ilość
-          <input type="number" value={form.quantity} onChange={set("quantity")} />
-        </label>
-        <label>
-          Data
-          <input type="date" value={form.date} onChange={set("date")} />
-        </label>
-      </div>
+      <label>
+        Ilość
+        <input type="number" value={form.quantity} onChange={set("quantity")} />
+      </label>
 
       <div className="row">
         <label>
@@ -94,6 +95,23 @@ export default function TradeForm({ editingTrade, onSave, onCancel }) {
           />
         </label>
       </div>
+
+      <label>
+        Czas wejścia
+        <input
+          type="datetime-local"
+          value={form.entryTime}
+          onChange={set("entryTime")}
+        />
+      </label>
+      <label>
+        Czas wyjścia
+        <input
+          type="datetime-local"
+          value={form.exitTime}
+          onChange={set("exitTime")}
+        />
+      </label>
 
       <button className="btn btn-primary btn-block" type="submit">
         {editingTrade ? "Zapisz zmiany" : "Dodaj transakcję"}

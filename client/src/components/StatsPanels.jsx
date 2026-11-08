@@ -1,7 +1,7 @@
 import Panel from "./Panel";
 import TodoList from "./TodoList";
 import { EquityChart, WeekBars, WinRing } from "./charts";
-import { money } from "../utils/trades";
+import { formatDateTime, money } from "../utils/trades";
 
 const STREAK_TEXT = {
   win: "wygranych z rzędu",
@@ -65,7 +65,7 @@ export default function StatsPanels({ stats }) {
               <li key={t.id} className="recent-row">
                 <div>
                   <div className="strong">{t.symbol}</div>
-                  <div className="muted-line">{t.date}</div>
+                  <div className="muted-line">{formatDateTime(t.entryTime)}</div>
                 </div>
                 <span
                   className={
