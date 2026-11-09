@@ -1,6 +1,6 @@
 import Panel from "./Panel";
 import TodoList from "./TodoList";
-import { EquityChart, WeekBars, WinRing } from "./charts";
+import { EquityChart, StreakFlame, WeekBars, WinRing } from "./charts";
 import { formatDateTime, money } from "../utils/trades";
 
 const STREAK_TEXT = {
@@ -13,6 +13,10 @@ export default function StatsPanels({ stats }) {
 
   const { streak, week, weekdays } = stats;
   const maxDay = Math.max(1, ...weekdays.map((d) => Math.abs(d.pnl)));
+  const hours = stats.hours;
+  const maxHour = Math.max(1, ...hours.map((h) => Math.abs(h.pnl)));
+  const traded = hours.filter((h) => h.count > 0);
+  const bestHour = traded.length ? traded.reduce((a, b) => (b.pnl > a.pnl ? b : a)) : null;
   const bestDay = weekdays.every((d) => d.count === 0)
     ? null
     : weekdays.reduce((a, b) => (b.pnl > a.pnl ? b : a));
@@ -30,7 +34,7 @@ export default function StatsPanels({ stats }) {
         <WeekBars bars={week.bars} />
       </Panel>
 
-      <Panel title="Win rate">
+      <Panel title="Win rate" className="panel-center">
         <div className="ring-wrap">
           <WinRing rate={stats.winRate} />
           <div className="ring-legend">
@@ -40,15 +44,12 @@ export default function StatsPanels({ stats }) {
         </div>
       </Panel>
 
-      <Panel title="Streak">
+      <Panel title="Streak" className="panel-center">
         <div className="hero">
-          <div
-            className={`hero-value ${
-              streak.type === "win" ? "pos" : streak.type === "loss" ? "neg" : ""
-            }`}
-          >
-            {streak.count}
-          </div>
+          <StreakFlame
+            count={streak.count}
+            tone={streak.type === "win" ? "pos" : streak.type === "loss" ? "neg" : "idle"}
+          />
           <div className="hero-sub">
             {STREAK_TEXT[streak.type] ?? "no active streak"}
           </div>
@@ -56,7 +57,7 @@ export default function StatsPanels({ stats }) {
       </Panel>
 
       {/* ---------- Row 2: recent, equity, best day + to-do ---------- */}
-      <Panel title="Recent trades">
+      <Panel title="Recent trades" className="panel-center">
         {stats.recent.length === 0 ? (
           <div className="empty">No trades</div>
         ) : (
@@ -80,7 +81,7 @@ export default function StatsPanels({ stats }) {
         )}
       </Panel>
 
-      <Panel title="Total P&L" aside="all time" className="span-2">
+      <Panel title="Total P&L" aside="all time" className="span-2 panel-grow">
         <div className="hero">
           <div className={`hero-value ${stats.totalPnl >= 0 ? "pos" : "neg"}`}>
             {money(stats.totalPnl)}
@@ -127,8 +128,40 @@ export default function StatsPanels({ stats }) {
           )}
         </Panel>
 
-        <Panel title="To do">
-          <TodoList />
+        <Panel title="Best hours">
+          {bestHour === null ? (
+            <div className="empty">No data</div>
+          ) : (
+            <>
+              <div className="day-name">{bestHour.label}</div>
+              <div className={`day-value ${bestHour.pnl >= 0 ? "pos" : "neg"}`}>
+                {money(bestHour.pnl)}
+              </div>
+              <div className="day-strip hour-strip">
+                {hours.map((h) => (
+                  <span
+                    key={h.label}
+                    title={`${h.label}: ${money(h.pnl)}`}
+                    style={{
+                      background:
+                        h.count === 0
+                          ? "var(--surface-2)"
+                          : h.pnl >= 0
+                            ? `rgba(61, 220, 132, ${0.3 + 0.7 * (h.pnl / maxHour)})`
+                            : `rgba(239, 83, 80, ${0.3 + 0.7 * (-h.pnl / maxHour)})`,
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="hour-labels">
+                <span>12am</span>
+                <span>6am</span>
+                <span>12pm</span>
+                <span>6pm</span>
+                <span>12am</span>
+              </div>
+            </>
+          )}
         </Panel>
       </div>
 
@@ -152,7 +185,7 @@ export default function StatsPanels({ stats }) {
         </Panel>
       </div>
 
-      <Panel title="P&L by instrument" className="span-4">
+      <Panel title="P&L by instrument" className="span-2">
         {stats.symbolRows.length === 0 ? (
           <div className="empty">No data</div>
         ) : (
@@ -173,6 +206,10 @@ export default function StatsPanels({ stats }) {
             ))}
           </div>
         )}
+      </Panel>
+
+      <Panel title="To do" className="span-2 todo-panel">
+        <TodoList />
       </Panel>
     </div>
   );

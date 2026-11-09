@@ -294,5 +294,85 @@
     "quantity": 10,
     "entryPrice": 243.83,
     "entryTime": "2026-11-06T12:45"
+  },
+  {
+    "id": 1794000030412,
+    "symbol": "AAPL",
+    "side": "long",
+    "quantity": 10,
+    "entryPrice": 190.12,
+    "exitPrice": 192.4,
+    "entryTime": "2026-11-09T10:05",
+    "exitTime": "2026-11-09T11:20"
+  },
+  {
+    "id": 1794000031587,
+    "symbol": "TSLA",
+    "side": "short",
+    "quantity": 5,
+    "entryPrice": 247.9,
+    "exitPrice": 249.35,
+    "entryTime": "2026-11-09T13:30",
+    "exitTime": "2026-11-09T13:55"
+  },
+  {
+    "id": 1794000032761,
+    "symbol": "NVDA",
+    "side": "long",
+    "quantity": 15,
+    "entryPrice": 141.2,
+    "exitPrice": 143.05,
+    "entryTime": "2026-11-10T09:45",
+    "exitTime": "2026-11-10T11:15"
+  },
+  {
+    "id": 1794000033904,
+    "symbol": "META",
+    "side": "short",
+    "quantity": 5,
+    "entryPrice": 561.3,
+    "exitPrice": 556.8,
+    "entryTime": "2026-11-10T14:10",
+    "exitTime": "2026-11-10T15:00"
+  },
+  {
+    "id": 1794000034256,
+    "symbol": "GOOGL",
+    "side": "long",
+    "quantity": 20,
+    "entryPrice": 168.45,
+    "exitPrice": 167.2,
+    "entryTime": "2026-11-11T10:30",
+    "exitTime": "2026-11-11T12:30"
+  },
+  {
+    "id": 1794000035690,
+    "symbol": "AMZN",
+    "side": "short",
+    "quantity": 10,
+    "entryPrice": 188.7,
+    "exitPrice": 186.9,
+    "entryTime": "2026-11-11T13:15",
+    "exitTime": "2026-11-11T14:00"
+  },
+  {
+    "id": 1794000036133,
+    "symbol": "MSFT",
+    "side": "long",
+    "quantity": 8,
+    "entryPrice": 415.6,
+    "exitPrice": 419.25,
+    "entryTime": "2026-11-13T09:55",
+    "exitTime": "2026-11-13T11:35"
+  },
+  {
+    "id": 1794000037478,
+    "symbol": "AAPL",
+    "side": "short",
+    "quantity": 12,
+    "entryPrice": 193.8,
+    "exitPrice": 194.6,
+    "entryTime": "2026-11-13T14:20",
+    "exitTime": "2026-11-13T15:10"
   }
 ]

@@ -22,6 +22,7 @@ function save(todos) {
 export default function TodoList() {
   const [todos, setTodos] = useState(load);
   const [text, setText] = useState("");
+  const doneCount = todos.filter((t) => t.done).length;
 
   function update(next) {
     setTodos(next);
@@ -37,6 +38,20 @@ export default function TodoList() {
 
   return (
     <div className="todo">
+      {todos.length > 0 && (
+        <div className="todo-progress">
+          <div className="todo-bar">
+            <div
+              className="todo-bar-fill"
+              style={{ width: `${(doneCount / todos.length) * 100}%` }}
+            />
+          </div>
+          <span>
+            {doneCount}/{todos.length} done
+          </span>
+        </div>
+      )}
+
       <ul className="todo-list">
         {todos.map((t) => (
           <li key={t.id} className={t.done ? "todo-done" : ""}>
@@ -73,6 +88,9 @@ export default function TodoList() {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
+        <button type="submit" className="todo-add" aria-label="Add task">
+          +
+        </button>
       </form>
     </div>
   );

@@ -89,6 +89,7 @@ export function computeStats(trades) {
     streak: streakInfo(pnls),
     week: weekSummary(trades),
     weekdays: weekdayTotals(closed),
+    hours: hourTotals(closed),
     recent: recentTrades(trades),
   };
 }
@@ -161,10 +162,32 @@ function weekdayTotals(closed) {
   return totals;
 }
 
+// P&L summed per hour of the day (24 slots, by entry time)
+function slotLabel(hour) {
+  const h = hour % 24;
+  return `${h % 12 || 12}${h < 12 ? "am" : "pm"}`;
+}
+
+function hourTotals(closed) {
+  const slots = Array.from({ length: 24 }, (_, i) => ({
+    label: `${slotLabel(i)}-${slotLabel(i + 1)}`,
+    pnl: 0,
+    count: 0,
+  }));
+  closed.forEach(({ trade, pnl }) => {
+    const t = trade.entryTime;
+    if (!t || t.length < 16) return;
+    const idx = Number(t.slice(11, 13));
+    slots[idx].pnl += pnl;
+    slots[idx].count++;
+  });
+  return slots;
+}
+
 // Five most recent trades (newest first)
 function recentTrades(trades) {
   return [...trades]
     .sort((a, b) => (b.entryTime ?? "").localeCompare(a.entryTime ?? "") || b.id - a.id)
-    .slice(0, 5)
+    .slice(0, 4)
     .map((t) => ({ ...t, pnl: calcPnl(t) }));
 }
