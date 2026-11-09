@@ -178,13 +178,14 @@ function hourTotals(closed) {
     const t = trade.entryTime;
     if (!t || t.length < 16) return;
     const idx = Number(t.slice(11, 13));
+    if (!(idx >= 0 && idx < 24)) return;
     slots[idx].pnl += pnl;
     slots[idx].count++;
   });
   return slots;
 }
 
-// Five most recent trades (newest first)
+// Four most recent trades (newest first)
 function recentTrades(trades) {
   return [...trades]
     .sort((a, b) => (b.entryTime ?? "").localeCompare(a.entryTime ?? "") || b.id - a.id)

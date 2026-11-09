@@ -2,7 +2,7 @@ GET http://localhost:3001/api/trades
 
 ###
 
-GET http://localhost:3001/api/trades/2
+GET http://localhost:3001/api/trades/1794000001050
 
 ###
 
@@ -11,27 +11,48 @@ Content-Type: application/json
 
 {
   "symbol": "AMZN",
+  "side": "long",
   "quantity": 3,
-  "price": 180
+  "entryPrice": 180,
+  "exitPrice": 185.5,
+  "entryTime": "2026-11-09T10:00",
+  "exitTime": "2026-11-09T12:30"
 }
 
 ###
 
-DELETE http://localhost:3001/api/trades/2
-
-###
-
-PUT http://localhost:3001/api/trades/2
+# Open position (no exit yet)
+POST http://localhost:3001/api/trades
 Content-Type: application/json
 
 {
-  "symbol": "GOOGL",
-  "quantity": 8,
-  "price": 2900
+  "symbol": "AMZN",
+  "side": "long",
+  "quantity": 3,
+  "entryPrice": 180,
+  "entryTime": "2026-11-09T10:00"
 }
 
+###
+
+PUT http://localhost:3001/api/trades/1794000001050
+Content-Type: application/json
+
+{
+  "symbol": "META",
+  "side": "long",
+  "quantity": 10,
+  "entryPrice": 543.15,
+  "exitPrice": 552.28,
+  "entryTime": "2026-10-13T09:50",
+  "exitTime": "2026-10-13T11:50"
+}
 
 ###
+
+DELETE http://localhost:3001/api/trades/1794000001050
+
+### Validation errors (expect 400)
 
 POST http://localhost:3001/api/trades
 Content-Type: application/json
@@ -45,21 +66,8 @@ Content-Type: application/json
 
 {
   "symbol": "AMZN",
-  "quantity": "abc",
-  "price": -5
-}
-
-###
-
-POST http://localhost:3001/api/trades
-Content-Type: application/json
-
-{
-  "symbol": "AMZN",
   "side": "long",
-  "quantity": 3,
-  "entryPrice": 180
+  "quantity": "abc",
+  "entryPrice": -5,
+  "entryTime": "not-a-date"
 }
-
-
-###
