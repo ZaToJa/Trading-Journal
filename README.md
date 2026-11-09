@@ -4,6 +4,12 @@ A full-stack web app for logging trades and analysing trading performance. Add l
 
 **Stack:** React 19 · Vite · Node.js · Express 5 · JSON file storage
 
+## Screenshots
+
+![Dashboard](docs/dashboard.png)
+
+![Trade log](docs/trade-log.png)
+
 ## Features
 
 - **Trade log** – create, edit and delete trades (symbol, side, quantity, entry/exit price, entry/exit date and time); open positions are supported (no exit yet)
