@@ -5,7 +5,7 @@ export default function Dashboard({ stats }) {
     <>
       <div className="page-head">
         <h1>Dashboard</h1>
-        <p>Podsumowanie Twoich transakcji</p>
+        <p>Summary of your trades</p>
       </div>
 
       <StatsPanels stats={stats} />

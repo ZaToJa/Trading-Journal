@@ -3,18 +3,18 @@ import { calcPnl, formatDateTime, money } from "../utils/trades";
 
 export default function TradesTable({ trades, onEdit, onDelete }) {
   return (
-    <Panel title="Transakcje" aside={`${trades.length}`}>
+    <Panel title="Trades" aside={`${trades.length}`}>
       <div className="table-scroll">
         <table className="trade-table">
           <thead>
             <tr>
-              <th>Czas wejścia</th>
-              <th>Czas wyjścia</th>
+              <th>Entry time</th>
+              <th>Exit time</th>
               <th>Instrument</th>
-              <th>Kierunek</th>
-              <th>Ilość</th>
-              <th>Cena wej.</th>
-              <th>Cena wyj.</th>
+              <th>Side</th>
+              <th>Quantity</th>
+              <th>Entry price</th>
+              <th>Exit price</th>
               <th>P&amp;L</th>
               <th></th>
             </tr>
@@ -32,19 +32,19 @@ export default function TradesTable({ trades, onEdit, onDelete }) {
                   </td>
                   <td>{t.quantity}</td>
                   <td>{t.entryPrice}</td>
-                  <td>{t.exitPrice ?? "otwarta"}</td>
+                  <td>{t.exitPrice ?? "open"}</td>
                   <td className={pnl === null ? "" : pnl >= 0 ? "pos" : "neg"}>
                     {pnl === null ? "—" : money(pnl)}
                   </td>
                   <td className="actions">
                     <button className="btn" onClick={() => onEdit(t)}>
-                      Edytuj
+                      Edit
                     </button>
                     <button
                       className="btn btn-danger"
                       onClick={() => onDelete(t.id)}
                     >
-                      Usuń
+                      Delete
                     </button>
                   </td>
                 </tr>

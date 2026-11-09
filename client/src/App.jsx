@@ -55,7 +55,7 @@ function App() {
             onDelete={deleteTrade}
           />
         )}
-        {page === "stats" && <Placeholder title="Statystyki" />}
+        {page === "stats" && <Placeholder title="Statistics" />}
         {page === "account" && <Placeholder title="Account" />}
       </main>
     </div>

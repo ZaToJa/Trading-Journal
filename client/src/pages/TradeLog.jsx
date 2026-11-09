@@ -5,7 +5,7 @@ export default function TradeLog({ trades, onEdit, onDelete }) {
     <>
       <div className="page-head">
         <h1>Trade Log</h1>
-        <p>Wszystkie transakcje</p>
+        <p>All trades</p>
       </div>
 
       <TradesTable trades={trades} onEdit={onEdit} onDelete={onDelete} />

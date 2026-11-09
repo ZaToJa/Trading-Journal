@@ -1,5 +1,5 @@
 /* =========================================================
-   Główna kolumna: kontener i wspólne reguły
+   Main column: container and shared rules
    ========================================================= */
 .main {
   min-width: 0;
@@ -21,14 +21,14 @@
   grid-column: span 4;
 }
 
-/* Kilka paneli jeden pod drugim w jednej komórce siatki */
+/* Several panels stacked in a single grid cell */
 .stack {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-/* Trzy równe kolumny wewnątrz jednego wiersza siatki */
+/* Three equal columns within a single grid row */
 .sub-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -43,7 +43,7 @@
 }
 
 /* =========================================================
-   Nagłówek strony
+   Page header
    ========================================================= */
 .page-head h1 {
   margin: 0;
@@ -58,7 +58,7 @@
 }
 
 /* =========================================================
-   Panele ze statystykami
+   Statistics panels
    ========================================================= */
 .hero {
   margin-bottom: 8px;
@@ -84,7 +84,7 @@
   letter-spacing: -0.02em;
 }
 
-/* Ten tydzień */
+/* This week */
 .week {
   display: flex;
   gap: 10px;
@@ -116,7 +116,7 @@
   background: var(--surface-2);
 }
 
-/* Ostatnie transakcje */
+/* Recent trades */
 .recent-list {
   display: flex;
   flex-direction: column;
@@ -136,7 +136,7 @@
   font-size: 0.88rem;
 }
 
-/* Najlepszy dzień */
+/* Best day */
 .day-name {
   font-size: 1.1rem;
   font-weight: 600;
@@ -174,7 +174,7 @@
   text-align: center;
 }
 
-/* Do zrobienia */
+/* To do */
 .todo-list {
   display: flex;
   flex-direction: column;
@@ -242,7 +242,7 @@
 
 
 /* =========================================================
-   Wykresy
+   Charts
    ========================================================= */
 .equity {
   display: block;
@@ -337,7 +337,7 @@
 }
 
 /* =========================================================
-   Tabela transakcji
+   Trades table
    ========================================================= */
 .table-scroll {
   overflow-x: auto;
@@ -406,7 +406,7 @@
 }
 
 /* =========================================================
-   Wąski ekran
+   Narrow screen
    ========================================================= */
 @media (max-width: 1100px) {
   .grid {

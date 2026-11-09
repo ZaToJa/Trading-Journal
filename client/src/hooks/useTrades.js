@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-// Cała komunikacja z API w jednym miejscu
+// All API communication in one place
 export function useTrades() {
   const [trades, setTrades] = useState([]);
 
@@ -39,7 +39,7 @@ export function useTrades() {
     const res = await fetch(`/api/trades/${id}`, { method: "DELETE" });
 
     if (!res.ok) {
-      console.log("Nie udało się usunąć transakcji");
+      console.log("Failed to delete trade");
       return;
     }
 

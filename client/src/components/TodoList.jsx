@@ -14,11 +14,11 @@ function save(todos) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
   } catch {
-    // brak dostępu do localStorage – lista działa tylko do odświeżenia strony
+    // no access to localStorage – the list only lasts until the page is refreshed
   }
 }
 
-// Lista zadań zapisywana w przeglądarce (nie na backendzie)
+// To-do list stored in the browser (not on the backend)
 export default function TodoList() {
   const [todos, setTodos] = useState(load);
   const [text, setText] = useState("");
@@ -57,7 +57,7 @@ export default function TodoList() {
             <button
               type="button"
               className="todo-remove"
-              aria-label="Usuń zadanie"
+              aria-label="Remove task"
               onClick={() => update(todos.filter((x) => x.id !== t.id))}
             >
               ×
@@ -65,11 +65,11 @@ export default function TodoList() {
           </li>
         ))}
       </ul>
-      {todos.length === 0 && <div className="empty">Brak zadań</div>}
+      {todos.length === 0 && <div className="empty">No tasks</div>}
 
       <form className="todo-form" onSubmit={handleAdd}>
         <input
-          placeholder="Nowe zadanie…"
+          placeholder="New task…"
           value={text}
           onChange={(e) => setText(e.target.value)}
         />

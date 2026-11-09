@@ -12,8 +12,8 @@ const EMPTY = {
 };
 
 export default function TradeForm({ editingTrade, onSave, onCancel }) {
-  // Formularz jest zamontowany od nowa przy zmianie `key` w App,
-  // więc stan startowy wystarczy ustawić raz.
+  // The form is remounted whenever `key` changes in App,
+  // so the initial state only needs to be set once.
   const [form, setForm] = useState(
     editingTrade
       ? {
@@ -46,13 +46,13 @@ export default function TradeForm({ editingTrade, onSave, onCancel }) {
   return (
     <form className="panel trade-form" onSubmit={handleSubmit}>
       <h2 className="panel-head">
-        {editingTrade ? "Edytuj transakcję" : "Nowa transakcja"}
+        {editingTrade ? "Edit trade" : "New trade"}
       </h2>
 
       <label>
         Symbol
         <input
-          placeholder="np. AAPL"
+          placeholder="e.g. AAPL"
           value={form.symbol}
           onChange={set("symbol")}
         />
@@ -72,13 +72,13 @@ export default function TradeForm({ editingTrade, onSave, onCancel }) {
       </div>
 
       <label>
-        Ilość
+        Quantity
         <input type="number" value={form.quantity} onChange={set("quantity")} />
       </label>
 
       <div className="row">
         <label>
-          Cena wejścia
+          Entry price
           <input
             type="number"
             value={form.entryPrice}
@@ -86,10 +86,10 @@ export default function TradeForm({ editingTrade, onSave, onCancel }) {
           />
         </label>
         <label>
-          Cena wyjścia
+          Exit price
           <input
             type="number"
-            placeholder="opcjonalnie"
+            placeholder="optional"
             value={form.exitPrice}
             onChange={set("exitPrice")}
           />
@@ -97,7 +97,7 @@ export default function TradeForm({ editingTrade, onSave, onCancel }) {
       </div>
 
       <label>
-        Czas wejścia
+        Entry time
         <input
           type="datetime-local"
           value={form.entryTime}
@@ -105,7 +105,7 @@ export default function TradeForm({ editingTrade, onSave, onCancel }) {
         />
       </label>
       <label>
-        Czas wyjścia
+        Exit time
         <input
           type="datetime-local"
           value={form.exitTime}
@@ -114,11 +114,11 @@ export default function TradeForm({ editingTrade, onSave, onCancel }) {
       </label>
 
       <button className="btn btn-primary btn-block" type="submit">
-        {editingTrade ? "Zapisz zmiany" : "Dodaj transakcję"}
+        {editingTrade ? "Save changes" : "Add trade"}
       </button>
       {editingTrade && (
         <button className="btn btn-block" type="button" onClick={onCancel}>
-          Anuluj
+          Cancel
         </button>
       )}
     </form>

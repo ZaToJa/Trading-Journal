@@ -18,7 +18,7 @@ function loadTrades() {
     return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
   } catch (err) {
     if (err.code !== "ENOENT") {
-      console.error("Nie udało się wczytać trades.json:", err.message);
+      console.error("Failed to load trades.json:", err.message);
       process.exit(1);
     }
     fs.writeFileSync(DATA_FILE, "[]", { flag: "wx" });
@@ -28,7 +28,7 @@ function loadTrades() {
 
 let trades = loadTrades();
 
-// data i godzina w formacie YYYY-MM-DDTHH:MM (jak z <input type="datetime-local">)
+// date and time in YYYY-MM-DDTHH:MM format (as from <input type="datetime-local">)
 const DATETIME_REGEX = /^\d{4}-\d{2}-\d{2}T([01]\d|2[0-3]):[0-5]\d$/;
 
 function validateTrade(body) {
@@ -45,7 +45,7 @@ function validateTrade(body) {
   if (typeof entryPrice !== "number" || entryPrice <= 0) {
     errors.push("entryPrice must be a positive number");
   }
-  // exitPrice jest opcjonalne (otwarta pozycja), ale jeśli jest, musi być poprawne
+  // exitPrice is optional (open position), but if present it must be valid
   if (
     exitPrice !== undefined &&
     exitPrice !== null &&
@@ -56,7 +56,7 @@ function validateTrade(body) {
   if (typeof entryTime !== "string" || !DATETIME_REGEX.test(entryTime)) {
     errors.push("entryTime must be a string in YYYY-MM-DDTHH:MM format");
   }
-  // exitTime jest opcjonalne (otwarta pozycja), ale jeśli jest, musi być poprawne
+  // exitTime is optional (open position), but if present it must be valid
   if (
     exitTime !== undefined &&
     exitTime !== null &&

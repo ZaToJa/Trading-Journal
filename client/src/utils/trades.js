@@ -1,5 +1,5 @@
 export function calcPnl(trade) {
-  // Otwarta pozycja nie ma jeszcze wyniku
+  // An open position has no result yet
   if (trade.exitPrice === undefined || trade.exitPrice === null) {
     return null;
   }
@@ -29,13 +29,13 @@ export function toISO(d) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-// Aktualna data i godzina w formacie YYYY-MM-DDTHH:MM
+// Current date and time in YYYY-MM-DDTHH:MM format
 export function nowDateTime() {
   const d = new Date();
   return `${toISO(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-// Dzień transakcji (YYYY-MM-DD) wzięty z daty wejścia
+// Trade day (YYYY-MM-DD) taken from the entry date
 export function tradeDay(trade) {
   return trade.entryTime ? trade.entryTime.slice(0, 10) : null;
 }
@@ -45,7 +45,7 @@ export function formatDateTime(value) {
   return value ? value.replace("T", " ") : "—";
 }
 
-// Wszystkie statystyki liczone w jednym miejscu
+// All statistics computed in one place
 export function computeStats(trades) {
   const closed = trades
     .map((t) => ({ trade: t, pnl: calcPnl(t) }))
@@ -93,7 +93,7 @@ export function computeStats(trades) {
   };
 }
 
-// P&L zsumowany per dzień: { "2026-11-03": 200, ... }
+// P&L summed per day: { "2026-11-03": 200, ... }
 export function pnlByDay(trades) {
   const days = {};
   trades.forEach((t) => {
@@ -105,7 +105,7 @@ export function pnlByDay(trades) {
   return days;
 }
 
-// Seria z rzędu na końcu listy: { count, type: "win" | "loss" | null }
+// Streak at the end of the list: { count, type: "win" | "loss" | null }
 function streakInfo(pnls) {
   if (pnls.length === 0) return { count: 0, type: null };
   const last = pnls[pnls.length - 1];
@@ -121,8 +121,8 @@ function streakInfo(pnls) {
   return { count, type };
 }
 
-// Bieżący tydzień (pon–pt jako słupki + suma całego tygodnia)
-const WEEK_LABELS = ["Pn", "Wt", "Śr", "Cz", "Pt"];
+// Current week (Mon–Fri as bars + total for the whole week)
+const WEEK_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
 export function weekSummary(trades, now = new Date()) {
   const days = pnlByDay(trades);
@@ -144,8 +144,8 @@ export function weekSummary(trades, now = new Date()) {
   return { bars, total };
 }
 
-// P&L zsumowany po dniu tygodnia (pon–pt) dla wszystkich transakcji
-const WEEKDAY_NAMES = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"];
+// P&L summed by weekday (Mon–Fri) across all trades
+const WEEKDAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 function weekdayTotals(closed) {
   const totals = WEEKDAY_NAMES.map((name) => ({ name, pnl: 0, count: 0 }));
@@ -161,7 +161,7 @@ function weekdayTotals(closed) {
   return totals;
 }
 
-// Pięć ostatnich transakcji (najnowsze na górze)
+// Five most recent trades (newest first)
 function recentTrades(trades) {
   return [...trades]
     .sort((a, b) => (b.entryTime ?? "").localeCompare(a.entryTime ?? "") || b.id - a.id)

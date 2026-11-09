@@ -2,7 +2,7 @@ import { money } from "../utils/trades";
 
 export function EquityChart({ data }) {
   if (data.length < 2) {
-    return <div className="empty">Za mało zamkniętych transakcji</div>;
+    return <div className="empty">Not enough closed trades</div>;
   }
   const W = 300;
   const H = 110;
@@ -57,7 +57,7 @@ export function WinRing({ rate }) {
   );
 }
 
-// Słupki pon–pt bieżącego tygodnia; dzień bez transakcji to szary placeholder
+// Mon–Fri bars for the current week; a day without trades is a grey placeholder
 export function WeekBars({ bars }) {
   const max = Math.max(...bars.map((b) => Math.abs(b.pnl ?? 0))) || 1;
 

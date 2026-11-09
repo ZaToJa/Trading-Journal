@@ -1,11 +1,11 @@
 const ITEMS = [
   { id: "dashboard", label: "Dashboard" },
   { id: "log", label: "Trade Log" },
-  { id: "stats", label: "Statystyki" },
+  { id: "stats", label: "Statistics" },
   { id: "account", label: "Account" },
 ];
 
-// Aktywna strona jest trzymana w App – menu tylko ją pokazuje i zgłasza kliknięcia
+// The active page is kept in App – the menu only displays it and reports clicks
 export default function SidebarNav({ active, onChange }) {
   return (
     <nav className="nav">

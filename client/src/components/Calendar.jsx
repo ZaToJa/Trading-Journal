@@ -2,10 +2,10 @@ import { useState } from "react";
 import Panel from "./Panel";
 import { money, pnlByDay } from "../utils/trades";
 
-const WEEKDAYS = ["Pn", "Wt", "Śr", "Cz", "Pt", "So", "Nd"];
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTHS = [
-  "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
-  "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ];
 
 const pad = (n) => String(n).padStart(2, "0");
@@ -17,7 +17,7 @@ export default function Calendar({ trades }) {
 
   const days = pnlByDay(trades);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  // getDay(): 0 = niedziela → przesuwamy tak, by tydzień zaczynał się w poniedziałek
+  // getDay(): 0 = Sunday → shift so that the week starts on Monday
   const offset = (new Date(year, month, 1).getDay() + 6) % 7;
 
   const monthPnl = Object.entries(days)
@@ -37,19 +37,19 @@ export default function Calendar({ trades }) {
 
   return (
     <Panel
-      title="Kalendarz"
+      title="Calendar"
       aside={
         <span className={monthPnl >= 0 ? "pos" : "neg"}>{money(monthPnl)}</span>
       }
     >
       <div className="cal-nav">
-        <button className="btn" onClick={() => shift(-1)} aria-label="Poprzedni miesiąc">
+        <button className="btn" onClick={() => shift(-1)} aria-label="Previous month">
           ←
         </button>
         <span>
           {MONTHS[month]} {year}
         </span>
-        <button className="btn" onClick={() => shift(1)} aria-label="Następny miesiąc">
+        <button className="btn" onClick={() => shift(1)} aria-label="Next month">
           →
         </button>
       </div>

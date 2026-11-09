@@ -4,8 +4,8 @@ import { EquityChart, WeekBars, WinRing } from "./charts";
 import { formatDateTime, money } from "../utils/trades";
 
 const STREAK_TEXT = {
-  win: "wygranych z rzędu",
-  loss: "przegranych z rzędu",
+  win: "wins in a row",
+  loss: "losses in a row",
 };
 
 export default function StatsPanels({ stats }) {
@@ -19,13 +19,13 @@ export default function StatsPanels({ stats }) {
 
   return (
     <div className="grid">
-      {/* ---------- Rząd 1: tydzień, win rate, streak ---------- */}
-      <Panel title="Ten tydzień" className="span-2">
+      {/* ---------- Row 1: week, win rate, streak ---------- */}
+      <Panel title="This week" className="span-2">
         <div className="hero">
           <div className={`hero-value ${week.total >= 0 ? "pos" : "neg"}`}>
             {money(week.total)}
           </div>
-          <div className="hero-sub">wynik bieżącego tygodnia</div>
+          <div className="hero-sub">result of the current week</div>
         </div>
         <WeekBars bars={week.bars} />
       </Panel>
@@ -34,8 +34,8 @@ export default function StatsPanels({ stats }) {
         <div className="ring-wrap">
           <WinRing rate={stats.winRate} />
           <div className="ring-legend">
-            <span className="pos">{stats.wins} wygranych</span>
-            <span className="neg">{stats.losses} przegranych</span>
+            <span className="pos">{stats.wins} wins</span>
+            <span className="neg">{stats.losses} losses</span>
           </div>
         </div>
       </Panel>
@@ -50,15 +50,15 @@ export default function StatsPanels({ stats }) {
             {streak.count}
           </div>
           <div className="hero-sub">
-            {STREAK_TEXT[streak.type] ?? "brak aktywnej serii"}
+            {STREAK_TEXT[streak.type] ?? "no active streak"}
           </div>
         </div>
       </Panel>
 
-      {/* ---------- Rząd 2: ostatnie, equity, best days + todo ---------- */}
-      <Panel title="Ostatnie transakcje">
+      {/* ---------- Row 2: recent, equity, best day + to-do ---------- */}
+      <Panel title="Recent trades">
         {stats.recent.length === 0 ? (
-          <div className="empty">Brak transakcji</div>
+          <div className="empty">No trades</div>
         ) : (
           <ul className="recent-list">
             {stats.recent.map((t) => (
@@ -72,7 +72,7 @@ export default function StatsPanels({ stats }) {
                     t.pnl === null ? "" : t.pnl >= 0 ? "pos strong" : "neg strong"
                   }
                 >
-                  {t.pnl === null ? "otwarta" : money(t.pnl)}
+                  {t.pnl === null ? "open" : money(t.pnl)}
                 </span>
               </li>
             ))}
@@ -80,22 +80,22 @@ export default function StatsPanels({ stats }) {
         )}
       </Panel>
 
-      <Panel title="Łączny P&L" aside="all time" className="span-2">
+      <Panel title="Total P&L" aside="all time" className="span-2">
         <div className="hero">
           <div className={`hero-value ${stats.totalPnl >= 0 ? "pos" : "neg"}`}>
             {money(stats.totalPnl)}
           </div>
           <div className="hero-sub">
-            {stats.closedCount} zamkniętych · {stats.openCount} otwartych
+            {stats.closedCount} closed · {stats.openCount} open
           </div>
         </div>
         <EquityChart data={stats.equity} />
       </Panel>
 
       <div className="stack">
-        <Panel title="Najlepszy dzień">
+        <Panel title="Best day">
           {bestDay === null ? (
-            <div className="empty">Brak danych</div>
+            <div className="empty">No data</div>
           ) : (
             <>
               <div className="day-name">{bestDay.name}</div>
@@ -127,34 +127,34 @@ export default function StatsPanels({ stats }) {
           )}
         </Panel>
 
-        <Panel title="Do zrobienia">
+        <Panel title="To do">
           <TodoList />
         </Panel>
       </div>
 
-      {/* ---------- Rząd 3: dodatkowe statystyki ---------- */}
+      {/* ---------- Row 3: additional statistics ---------- */}
       <div className="span-4 sub-grid">
         <Panel title="Profit factor">
           <div className="big">
             {stats.profitFactor === null ? "—" : stats.profitFactor.toFixed(2)}
           </div>
-          <div className="muted-line">zysk brutto / strata brutto</div>
+          <div className="muted-line">gross profit / gross loss</div>
         </Panel>
 
-        <Panel title="Średnia wygrana">
+        <Panel title="Average win">
           <div className="big pos">{money(stats.avgWin)}</div>
-          <div className="muted-line">najlepsza: {money(stats.best)}</div>
+          <div className="muted-line">best: {money(stats.best)}</div>
         </Panel>
 
-        <Panel title="Średnia strata">
+        <Panel title="Average loss">
           <div className="big neg">{money(-stats.avgLoss)}</div>
-          <div className="muted-line">najgorsza: {money(stats.worst)}</div>
+          <div className="muted-line">worst: {money(stats.worst)}</div>
         </Panel>
       </div>
 
-      <Panel title="P&L wg instrumentu" className="span-4">
+      <Panel title="P&L by instrument" className="span-4">
         {stats.symbolRows.length === 0 ? (
-          <div className="empty">Brak danych</div>
+          <div className="empty">No data</div>
         ) : (
           <div className="sym-list">
             {stats.symbolRows.map(([sym, v]) => (
